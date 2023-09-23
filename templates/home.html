@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-box">
+            <img src="{{ url_for('static', path='/img/idea_icon.png') }}" alt="API Logo">
+        </div>
+        <div class="info">
+            <h1>You've entered in the IdeaBin API Endpoint</h1>
+            <p><span class="text-extra">for api documentation:</span> <span class="doc-link"><a href="/docs">Doc <span class="return-icon">&rarr;</span></a></span></p>
+        </div>
+        <div class="author_info">
+            <p>developed by: <strong>Shishir Sabbir</strong></p>
+        </div>
+    </div>
+</body>
+</html>
