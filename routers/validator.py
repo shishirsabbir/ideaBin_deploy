@@ -57,6 +57,10 @@ class UserResponse(BaseModel):
     }
 
 
+class IdeaResponse(BaseModel):
+    pass
+
+
 # CREATING ROUTES FOR VALIDATORS
 @router.get('/user/{app_key}', status_code=status.HTTP_200_OK)
 async def get_username(db: db_dependency, app_key: str = Path(min_length=32)):

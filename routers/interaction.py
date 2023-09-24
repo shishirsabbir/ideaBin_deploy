@@ -76,7 +76,7 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 # CREATING ROUTES FOR INTERACTIONS
-@router.post("/vote", status_code=status.HTTP_201_CREATED)
+@router.post("/vote", status_code=status.HTTP_200_OK)
 async def vote_on_idea(user: user_dependency, db: db_dependency, vote_idea_request: VoteIdeaRequest):
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
@@ -86,8 +86,15 @@ async def vote_on_idea(user: user_dependency, db: db_dependency, vote_idea_reque
     db.add(vote_model)
     db.commit()
 
+    # returning total number of votes
+    vote_update_model = db.query(Vote).filter(Vote.idea_id == vote_idea_request.idea_id).all()
 
-@router.post("/unvote", status_code=status.HTTP_204_NO_CONTENT)
+    return {"vote_count": len(vote_update_model)}
+
+
+
+
+@router.post("/unvote", status_code=status.HTTP_200_OK)
 async def unvote_on_idea(user: user_dependency, db: db_dependency, vote_idea_request: VoteIdeaRequest):
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
@@ -99,6 +106,11 @@ async def unvote_on_idea(user: user_dependency, db: db_dependency, vote_idea_req
     
     db.query(Vote).filter(Vote.idea_id == vote_idea_request.idea_id).filter(Vote.author_id == user.get("user_id")).delete()
     db.commit()
+
+    # returning total number of votes
+    vote_update_model = db.query(Vote).filter(Vote.idea_id == vote_idea_request.idea_id).all()
+
+    return {"vote_count": len(vote_update_model)}
 
 
 @router.post("/comment", status_code=status.HTTP_201_CREATED)
