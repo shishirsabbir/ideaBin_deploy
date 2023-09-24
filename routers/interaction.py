@@ -5,6 +5,7 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from .auth import get_current_user
 from pydantic import BaseModel, Field
+from .ideas import check_own_vote_status
 
 
 # DECLARING THE ROUTER APP
@@ -89,7 +90,10 @@ async def vote_on_idea(user: user_dependency, db: db_dependency, vote_idea_reque
     # returning total number of votes
     vote_update_model = db.query(Vote).filter(Vote.idea_id == vote_idea_request.idea_id).all()
 
-    return {"vote_count": len(vote_update_model)}
+    return {
+        "status": "voted" if check_own_vote_status(idea_id=vote_idea_request.idea_id, author_id=user.get("user_id"), db=db) else "unvoted",
+        "vote_count": len(vote_update_model),
+    }
 
 
 
@@ -110,7 +114,10 @@ async def unvote_on_idea(user: user_dependency, db: db_dependency, vote_idea_req
     # returning total number of votes
     vote_update_model = db.query(Vote).filter(Vote.idea_id == vote_idea_request.idea_id).all()
 
-    return {"vote_count": len(vote_update_model)}
+    return {
+        "status": "voted" if check_own_vote_status(idea_id=vote_idea_request.idea_id, author_id=user.get("user_id"), db=db) else "unvoted",
+        "vote_count": len(vote_update_model),
+    }
 
 
 @router.post("/comment", status_code=status.HTTP_201_CREATED)
